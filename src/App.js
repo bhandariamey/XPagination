@@ -16,12 +16,10 @@ function App() {
     getData();
   }, []);
 
-  // Logic to calculate the index of the first and last items to display on the current page
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
 
-  // Logic to change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
@@ -49,10 +47,11 @@ function App() {
           </tbody>
         </table>
 
-        <div style={{ textAlign: 'center' }}>
+        <div style={{ display:'flex', justifyContent:'space-around', alignItems:'center'}}>
           <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
             Previous
           </button>
+          <p>{currentPage}</p>
           <button onClick={() => paginate(currentPage + 1)} disabled={indexOfLastItem >= data.length}>
             Next
           </button>
