@@ -7,9 +7,11 @@ function App() {
   const [itemsPerPage] = useState(10);
 
   const getData = async () => {
-    const response = await fetch("https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json");
+   try{ const response = await fetch("https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json");
     const respData = await response.json();
-    setData(respData);
+    setData(respData);}catch(e){
+      console.log(e)
+    }
   };
 
   useEffect(() => {
