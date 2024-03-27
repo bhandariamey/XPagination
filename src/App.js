@@ -1,24 +1,64 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from 'react';
+import './App.module.css';
 
 function App() {
+  const [data, setData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+
+  const getData = async () => {
+    const response = await fetch("https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json");
+    const respData = await response.json();
+    setData(respData);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  // Logic to calculate the index of the first and last items to display on the current page
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Logic to change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <div>
+        <h3 style={{ textAlign: 'center' }}>Employee Data Table</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentItems.map((e) => (
+              <tr key={e.id}>
+                <td>{e.id}</td>
+                <td>{e.name}</td>
+                <td>{e.email}</td>
+                <td>{e.role}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <div style={{ textAlign: 'center' }}>
+          <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
+            Previous
+          </button>
+          <button onClick={() => paginate(currentPage + 1)} disabled={indexOfLastItem >= data.length}>
+            Next
+          </button>
+        </div>
+      </div>
+    </>
   );
 }
 
